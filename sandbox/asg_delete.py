@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import boto
 from boto.exception import BotoServerError
 from boto.regioninfo import RegionInfo
@@ -17,8 +19,11 @@ host = up.hostname
 port = up.port
 
 region = RegionInfo(name="nimbus", endpoint=host)
-con = boto.ec2.autoscale.AutoScaleConnection(aws_access_key_id=username, aws_secret_access_key=password, is_secure=ssl, port=port, debug=2, region=region)
+con = boto.ec2.autoscale.AutoScaleConnection(aws_access_key_id=username, aws_secret_access_key=password, is_secure=ssl, port=port, debug=2, region=region, validate_certs=False)
 con.host = host
+
+if len(sys.argv) != 2:
+    sys.exit("usage: %s name" % sys.argv[0])
 
 name=sys.argv[1]
 
@@ -26,4 +31,3 @@ x = con.get_all_groups(names=[name,])
 
 print "deleting %s" % (str(x[0]))
 x[0].delete()
-

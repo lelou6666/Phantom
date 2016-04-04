@@ -1,0 +1,12 @@
+type: openstack
+host: 149.165.146.57
+port: 8773
+secure: false
+path: /services/Cloud
+needs_elastic_ip: True
+instance_types:
+  - m1.tiny
+  - m1.small
+  - m1.medium
+  - m1.large
+  - m1.xlarge

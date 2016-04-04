@@ -1,15 +1,16 @@
 import webob
 from pyhantom.in_data_types import DescribeAutoScalingInstancesInput, TerminateInstanceInAutoScalingGroupInput
-from pyhantom.util import CatchErrorDecorator, log_reply, log_request
+from pyhantom.util import CatchErrorDecorator, log_reply, log_request, statsd
 from pyhantom.wsgiapps import PhantomBaseService
 
 class DescribeAutoScalingInstances(PhantomBaseService):
 
-    def __init__(self, name):
-        PhantomBaseService.__init__(self, name)
+    def __init__(self, name, cfg=None, authz=None):
+        PhantomBaseService.__init__(self, name, cfg, authz)
 
     @webob.dec.wsgify
     @CatchErrorDecorator(appname="DescribeAutoScalingInstances")
+    @statsd
     def __call__(self, req):
         user_obj = self.get_user_obj(req)
         log_request(req, user_obj)
@@ -40,11 +41,12 @@ class DescribeAutoScalingInstances(PhantomBaseService):
 
 class TerminateInstanceInAutoScalingGroup(PhantomBaseService):
 
-    def __init__(self, name):
-        PhantomBaseService.__init__(self, name)
+    def __init__(self, name, cfg=None, authz=None):
+        PhantomBaseService.__init__(self, name, cfg, authz)
 
     @webob.dec.wsgify
     @CatchErrorDecorator(appname="TerminateInstanceInAutoScalingGroup")
+    @statsd
     def __call__(self, req):
         user_obj = self.get_user_obj(req)
         log_request(req, user_obj)

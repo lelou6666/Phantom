@@ -1,0 +1,4 @@
+type: nimbus
+host: wispy.rcac.purdue.edu
+port: 8444
+secure: True

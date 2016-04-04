@@ -5,8 +5,13 @@
     "path": "/home/${epu_username}/app-venv"
   },
   "phantomweb": {
+    "retrieve_method": "${phantomweb_retrieve_method}",
+    "retrieve_config": {
+      "archive_url": "${phantomweb_archive_url}"
+    },
+    "install_method": "${phantomweb_install_method}",
     "git_repo": "git://github.com/nimbusproject/PhantomWebApp.git",
-    "git_branch": "phantom0.2",
+    "git_branch": "master",
     "syslog_server": "${syslog_host}",
     "syslog_port": 514,
     "debug": "On",
@@ -28,7 +33,17 @@
     "email_user": "${email_user}",
     "email_port": 587,
     "email_tls": "True",
-    "email_fromaddr": "${email_addr}"
+    "email_fromaddr": "${email_addr}",
+    "google_analytics_code": "${google_analytics_code}",
+    "exceptional_api_key": "${exceptional_api_key}",
+    "rabbit_host": "${rabbitmq_host}",
+    "rabbit_port": 5672,
+    "rabbit_user": "${rabbitmq_username}",
+    "rabbit_password": "${rabbitmq_password}",
+    "rabbit_exchange": "${rabbitmq_exchange}",
+    "rabbit_ssl": "False",
+    "opentsdb_host": "${opentsdb_host}",
+    "opentsdb_port": "${opentsdb_port}"
   },
   "appdir": "/home/${epu_username}/phantomweb",
   "username": "${epu_username}",

@@ -2,16 +2,18 @@ import logging
 import webob
 from pyhantom.in_data_types import LaunchConfigurationInput, DeleteLaunchConfigurationInput, DescribeLaunchConfigurationsInput
 from pyhantom.out_data_types import LaunchConfigurationType
-from pyhantom.util import make_arn, CatchErrorDecorator, log, log_reply, log_request
+from pyhantom.util import make_arn, CatchErrorDecorator, log, log_reply, log_request, statsd
 from pyhantom.wsgiapps import PhantomBaseService
 
 
 class CreateLaunchConfiguration(PhantomBaseService):
-    def __init__(self, name):
-        PhantomBaseService.__init__(self, name)
+
+    def __init__(self, name, cfg=None, authz=None):
+        PhantomBaseService.__init__(self, name, cfg, authz)
 
     @webob.dec.wsgify
     @CatchErrorDecorator(appname="CreateLaunchConfiguration")
+    @statsd
     def __call__(self, req):
         user_obj = self.get_user_obj(req)
         log_request(req, user_obj)
@@ -31,11 +33,13 @@ class CreateLaunchConfiguration(PhantomBaseService):
 
 
 class DeleteLaunchConfiguration(PhantomBaseService):
-    def __init__(self, name):
-        PhantomBaseService.__init__(self, name)
+
+    def __init__(self, name, cfg=None, authz=None):
+        PhantomBaseService.__init__(self, name, cfg, authz)
 
     @webob.dec.wsgify
     @CatchErrorDecorator(appname="DeleteLaunchConfiguration")
+    @statsd
     def __call__(self, req):
         user_obj = self.get_user_obj(req)
         log_request(req, user_obj)
@@ -52,11 +56,13 @@ class DeleteLaunchConfiguration(PhantomBaseService):
 
 
 class DescribeLaunchConfigurations(PhantomBaseService):
-    def __init__(self, name):
-        PhantomBaseService.__init__(self, name)
+
+    def __init__(self, name, cfg=None, authz=None):
+        PhantomBaseService.__init__(self, name, cfg, authz)
 
     @webob.dec.wsgify
     @CatchErrorDecorator(appname="DescribeLaunchConfigurations")
+    @statsd
     def __call__(self, req):
         user_obj = self.get_user_obj(req)
         log_request(req, user_obj)
@@ -88,6 +94,3 @@ class DescribeLaunchConfigurations(PhantomBaseService):
         res.unicode_body = doc.documentElement.toxml()
         log_reply(doc, user_obj)
         return res
-
-
-

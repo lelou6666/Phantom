@@ -1,0 +1,11 @@
+type: openstack
+host: openstack.uc.futuregrid.org
+port: 8773
+secure: true
+path: /services/Cloud
+instance_types:
+  - m1.tiny
+  - m1.small
+  - m1.medium
+  - m1.large
+  - m1.xlarge

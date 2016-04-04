@@ -6,11 +6,23 @@
   },
   "supervisord": {
     "command": "/home/${epu_username}/phantom/start-phantom.sh",
-    "name": "phantom"
+    "name": "phantom",
+    "memmon": {
+      "maxmb": 200
+    }
   },
   "autoscale": {
+    "retrieve_method": "${phantom_retrieve_method}",
+    "retrieve_config": {
+      "archive_url": "${phantom_archive_url}"
+    },
+    "install_method": "${phantom_install_method}",
     "git_repo": "git://github.com/nimbusproject/Phantom.git",
+<<<<<<< HEAD
     "git_branch": "refactor",
+=======
+    "git_branch": "master",
+>>>>>>> refs/remotes/nimbusproject/master
     "logfile": "/home/${epu_username}/phantom/phantom.log",
     "dburl": "mysql://${mysql_username}:${mysql_password}@${mysql_host}/${mysql_dbname}",
     "rabbit_host": "${rabbitmq_host}",
@@ -20,7 +32,15 @@
     "rabbit_exchange": "${rabbitmq_exchange}",
     "syslog_server": "${syslog_host}",
     "syslog_port": 514,
-    "port": 8445
+    "port": 8445,
+    "opentsdb": {
+      "host": "${opentsdb_host}",
+      "port": 4242
+    },
+    "statsd": {
+      "host": "localhost",
+      "port": 8125
+    }
   },
   "appdir": "/home/${epu_username}/phantom",
   "username": "${epu_username}",
