@@ -89,8 +89,12 @@ class SimpleSQL(PHAuthzIface):
             log(logging.ERROR, "A database error occurred while trying to access the user db %s" % (str(ex)))
             raise PhantomAWSException('InternalFailure')
 
+<<<<<<< HEAD
     @reset_db
     def add_alter_user(self, displayname, access_key, access_secret):
+=======
+    def _add_alter_user(self, displayname, access_key, access_secret):
+>>>>>>> refs/remotes/nimbusproject/master
         db_obj = self._lookup_user(access_key)
         if not db_obj:
             db_obj = PhantomUserDBObject()
@@ -109,7 +113,11 @@ class SimpleSQL(PHAuthzIface):
 
     @reset_db
     def add_user(self, displayname, access_id, access_secret):
+<<<<<<< HEAD
         self.add_alter_user(displayname, access_id, access_secret)
+=======
+        self._add_alter_user(displayname, access_id, access_secret)
+>>>>>>> refs/remotes/nimbusproject/master
         self.commit()
 
     def _lookup_user(self, access_key):

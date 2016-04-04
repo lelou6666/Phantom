@@ -122,12 +122,12 @@ class EPUSystem(SystemAPI):
         self._dashi_conn = DashiCeiConnection(self._rabbit, self._rabbituser, self._rabbitpw, exchange=self._rabbitexchange, timeout=60, port=self._rabbit_port, ssl=ssl)
 
         try:
-            self._opentsdb_host = cfg.phantom.sensor.opentsdb_host
+            self._opentsdb_host = cfg.phantom.sensor.opentsdb.host
         except AttributeError:
             self._opentsdb_host = DEFAULT_OPENTSDB_HOST
 
         try:
-            self._opentsdb_port = cfg.phantom.sensor.opentsdb_port
+            self._opentsdb_port = cfg.phantom.sensor.opentsdb.port
         except AttributeError:
             self._opentsdb_port = DEFAULT_OPENTSDB_PORT
 
@@ -233,6 +233,10 @@ class EPUSystem(SystemAPI):
                     ot_lc = LaunchConfigurationType('LaunchConfiguration')
                     ot_lc.BlockDeviceMappings = AWSListType('BlockDeviceMappings')
 
+                    if 'CreatedTime' not in mapped_def.keys():
+                        # This is an LC that was created with the new Phantom API, ignore it
+                        continue
+
                     tm = _get_time(mapped_def['CreatedTime'])
                     ot_lc.CreatedTime = DateTimeType('CreatedTime', tm)
 
@@ -248,7 +252,8 @@ class EPUSystem(SystemAPI):
                     ot_lc.SecurityGroups = AWSListType('SecurityGroups')
                     contextualization = dt_descr.get('contextualization')
                     if contextualization is not None and contextualization.get('method') == 'userdata':
-                        ot_lc.UserData = contextualization.get('userdata')
+                        # UserData should be base64-encoded to be properly decoded by boto
+                        ot_lc.UserData = base64.b64encode(contextualization.get('userdata'))
                     else:
                         ot_lc.UserData = None
 

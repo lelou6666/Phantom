@@ -12,6 +12,11 @@
     }
   },
   "autoscale": {
+    "retrieve_method": "${phantom_retrieve_method}",
+    "retrieve_config": {
+      "archive_url": "${phantom_archive_url}"
+    },
+    "install_method": "${phantom_install_method}",
     "git_repo": "git://github.com/nimbusproject/Phantom.git",
     "git_branch": "master",
     "logfile": "/home/${epu_username}/phantom/phantom.log",
@@ -23,7 +28,15 @@
     "rabbit_exchange": "${rabbitmq_exchange}",
     "syslog_server": "${syslog_host}",
     "syslog_port": 514,
-    "port": 8445
+    "port": 8445,
+    "opentsdb": {
+      "host": "${opentsdb_host}",
+      "port": 4242
+    },
+    "statsd": {
+      "host": "localhost",
+      "port": 8125
+    }
   },
   "appdir": "/home/${epu_username}/phantom",
   "username": "${epu_username}",

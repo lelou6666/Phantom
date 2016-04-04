@@ -1,9 +1,8 @@
 type: openstack
-host: 149.165.146.50
+host: openstack.uc.futuregrid.org
 port: 8773
-secure: false
+secure: true
 path: /services/Cloud
-opentsdb_tag: phantom_unique
 instance_types:
   - m1.tiny
   - m1.small

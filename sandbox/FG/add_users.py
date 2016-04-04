@@ -58,6 +58,15 @@ def register_key_with_iaas(iaas_url, keytext, keyname, access_key, access_secret
 
     region = RegionInfo(name="nimbus", endpoint=host)
     ec2conn = boto.connect_ec2(access_key, access_secret, region=region, port=port, validate_certs=False)
+
+    # Workaround for a bug in Nimbus <= 2.10.1:
+    # import_key_pair does not properly update an existing key
+    try:
+        if ec2conn.get_key_pair(keyname) is not None:
+            ec2conn.delete_key_pair(keyname)
+    except IndexError:
+        # This exception is raised when boto can't find a key on Nimbus
+        pass
     ec2conn.import_key_pair(keyname, keytext)
 
 
@@ -67,7 +76,7 @@ def add_one_user(authz, dtrs_client, access_key, access_secret, pub_key, email, 
             'secret_key': access_secret,
             'key_name': phantomkey_name}
 
-    hosts = {"hotel": "https://svc.uc.futuregrid.org:8444", "sierra" : "https://s83r.idp.sdsc.futuregrid.org:8444", "alamo": "https://master1.futuregrid.tacc.utexas.edu:8444", "foxtrot": "https://f1r.idp.ufl.futuregrid.org:9444"}
+    hosts = {"hotel": "https://svc.uc.futuregrid.org:8444", "alamo": "https://nimbus.futuregrid.tacc.utexas.edu:8444", "foxtrot": "https://f1r.idp.ufl.futuregrid.org:9444"}
     print "public key is %s" % (pub_key)
     for host in hosts:
         try:
