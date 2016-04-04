@@ -22,6 +22,12 @@
     "metrics_username": "${metrics_username}",
     "metrics_password": "${metrics_password}"
   },
+  "statsd": {
+    "username": "${epu_username}",
+    "groupname": "${epu_groupname}",
+    "librato_email": "${librato_email}",
+    "librato_token": "${librato_token}"
+  },
   "epu": {
     "username": "${epu_username}",
     "groupname": "${epu_groupname}",
@@ -36,13 +42,13 @@
     ],
     "retrieve_config": {
       "retrieve_method": "${epu_retrieve_method}",
+      "archive_url": "${epu_archive_url}",
       "git_repo": "${epu_git_repo}",
       "git_reference": "${epu_git_branch}"
     },
     "install_config": {
-      "install_method": "py_venv_setup",
-      "package_repo": "${package_repo}",
-      "extras": ["exceptional"]
+      "install_method": "${epu_install_method}",
+      "extras": ["exceptional", "statsd"]
     }
   },
   "opentsdb": {
@@ -50,6 +56,13 @@
   },
   "tcollector": {
       "tsd_port": 4242
+  },
+  "collectd": {
+    "plugins": ["syslog", "cpu", "df", "entropy", "load", "memory", "processes", "users"]
+  },
+  "collectd_librato": {
+    "email": "${librato_email}",
+    "api_token": "${librato_token}"
   },
   "recipes": [
     "apt",
@@ -60,6 +73,9 @@
     "hbase_basic",
     "opentsdb",
     "tcollector",
+    "statsd",
+    "collectd",
+    "collectd-librato",
     "epu"
   ]
 }

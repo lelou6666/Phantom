@@ -1,8 +1,14 @@
-import os
-from pyhantom.authz.simple_file import SimpleFileDataStore
-from pyhantom.authz.simple_sql_db import SimpleSQL
-from pyhantom.phantom_exceptions import PhantomAWSException
 import logging
+import os
+
+try:
+    from statsd import StatsClient
+except ImportError:
+    StatsClient = None
+
+from pyhantom.authz.simple_file import SimpleFileDataStore
+from pyhantom.authz.simple_sql_db import SimpleSQL, SimpleSQLSessionMaker
+from pyhantom.phantom_exceptions import PhantomAWSException
 import dashi.bootstrap
 from pyhantom.system.epu.epu_client import EPUSystem
 from pyhantom.system.epu_localdb.epu_system import EPUSystemWithLocalDB
@@ -22,7 +28,7 @@ class PhantomConfig(object):
             dburl = self._CFG.phantom.authz.dburl
             self._authz = CumulusDataStore(dburl)
         elif self._CFG.phantom.authz.type == "sqldb":
-            self._authz = SimpleSQL(CFG.phantom.authz.dburl)
+            self._authz_sessionmaker = SimpleSQLSessionMaker(CFG.phantom.authz.dburl)
         else:
             raise PhantomAWSException('InternalFailure', details="Phantom authz module is not setup.")
 
@@ -37,6 +43,19 @@ class PhantomConfig(object):
         else:
             raise PhantomAWSException('InternalFailure', details="Phantom authz module is not setup.")
 
+        self.statsd_client = None
+        try:
+            if self._CFG.statsd is not None:
+                host = self._CFG.statsd["host"]
+                port = self._CFG.statsd["port"]
+                self._logger.info("Setting up statsd client with host %s and port %d" % (host, port))
+                self.statsd_client = StatsClient(host, port)
+        except AttributeError:
+            # This means that there is not statsd block in the configuration
+            pass
+        except:
+            self._logger.exception("Failed to set up statsd client")
+
     def get_system(self):
         return self._system
 
@@ -44,7 +63,10 @@ class PhantomConfig(object):
         return self._logger
 
     def get_authz(self):
-        return self._authz
+        if self._authz_sessionmaker is not None:
+            return SimpleSQL(self._authz_sessionmaker)
+        else:
+            return self._authz
 
 
 def determine_path():

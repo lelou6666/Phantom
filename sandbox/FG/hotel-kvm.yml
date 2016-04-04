@@ -1,4 +1,4 @@
 type: nimbus
-host: wispy.rcac.purdue.edu
+host: login1.uc.futuregrid.org
 port: 8444
 secure: True
